@@ -22,4 +22,4 @@ class Product extends Entity {
   }
 }
 
-export { Product }
+export const product = new Product()

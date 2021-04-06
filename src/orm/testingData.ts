@@ -6,8 +6,8 @@ export function TestInsert() {
     INSERT into category (name) values ("sport"), ("classic"), ("kid")
   `)
   MySQLConnect.query(`
-    INSERT into producer (name, country) values ("Salo", "Ukraine"), ("Zhora", "Russia")
-  `)
+  INSERT into producer (name, country) values ("Salo", "Ukraine"), ("Zhora", "Russia")
+`)
   MySQLConnect.query(`
     INSERT into product (name, sex, price, color, size, amount, producer, category)
     values

@@ -1,33 +1,27 @@
 import { MySQLConnect } from "../database"
+import { IEntity, IArgs } from "./types"
 
-// let ENTITIES: any = {}
-export const test = 'testEXPORT'
-
-export class Entity {
-  MySQLConnect: any;
+export class Entity implements IEntity {
   data: any;
-  schema: any;
-  constructor() {
-    this.MySQLConnect = MySQLConnect;
-  }
 
-  get entityName() {
+  get entityName(): string {
     return this.constructor.name.toLocaleLowerCase()
   }
 
-  set setSchema(value: any) {
-    this.schema = value
-  }
+  // test() {
+  //   console.log("HELLO FROM: ", this.entityName)
+  // }
+  // set setSchema(value: any) {
+  //   this.schema = value
+  // }
 
-  public registerEntity(): void {
-    // entityDescription: string
-    // ENTITIES[this.entityName] = this.entityName
-    const $query = `CREATE TABLE IF NOT EXISTS ${this.entityName} (${this.schema})`
-    console.log("$query", $query)
-    MySQLConnect.query($query)
-  }
+  // registerEntity(): any {
+  //   const $query = `CREATE TABLE IF NOT EXISTS ${this.entityName} (${this.schema})`
+  //   MySQLConnect.query($query)
+  //   console.log(chalk.italic.redBright(this.entityName.toLocaleUpperCase()) + " was created")
+  // }
 
-  conditions(args: any) {
+  conditions(args: IArgs) {
     if (Object.keys(args).length === 0) return ''
     let conditionQuery = 'WHERE'
     let index = 1
@@ -41,7 +35,7 @@ export class Entity {
     return conditionQuery
   }
 
-  computedProps(args: any) {
+  computedProps(args: IArgs) {
     if (Object.keys(args).length === 0) return ''
     let computedQuery = ', '
 
@@ -52,7 +46,7 @@ export class Entity {
     return computedQuery
   }
 
-  async eager(entityName: any) {
+  async eager(entityName: string) {
     const _data = this.data.map(async (field: any) => {
       const result: any = await this.findById(field[entityName])
       field[entityName] = result.data
@@ -63,56 +57,33 @@ export class Entity {
     return this
   }
 
-  find(args: any = {}) {
+  find(args: IArgs = {}) {
     const { select = ["*"], where = {}, computed = {} } = args
+
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(',')} ${this.computedProps(computed)}
         FROM ${this.entityName}
         ${this.conditions(where)}
       `
-      MySQLConnect.query(_query, (err: any, data: any, fields: any) => {
+      MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
         resolve(Object.assign(this, { data }))
       })
     })
   }
 
-  findById(id: number | string, args: any = {}) {
+  findById(id: number | string, args: IArgs = {}) {
     const { select = ['*'], where = {}, computed = {} } = args
+
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(",")} ${this.computedProps(computed)}
         FROM ${this.entityName}
         ${this.conditions(Object.assign(where, { id }))}
       `
-      MySQLConnect.query(_query, (err: any, data: any, fields: any) => {
+      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         resolve(Object.assign(this, { data }))
       })
     })
   }
 }
-
-// export { Entity }
-// class Client extends Entity {
-//   constructor() {
-//     super()
-//     // this.registerEntity(this)
-//   }
-// }
-// class Product extends Entity {
-//   constructor() {
-//     super()
-//     // this.registerEntity(this)
-//   }
-// }
-// class Booking extends Entity {
-//   constructor() {
-//     super()
-//     // this.registerEntity(this)
-//   }
-// }
-// const client = new Client()
-// const product = new Product()
-// const booking = new Booking()
-
-// module.exports = { client, product, booking }
