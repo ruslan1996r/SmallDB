@@ -1,21 +1,23 @@
 import { MySQLConnect } from "../database"
 import { IEntity, IArgs } from "./types"
+import chalk from "chalk"
 
 export class Entity implements IEntity {
   data: any;
+  // schema: string = '';
 
   get entityName(): string {
     return this.constructor.name.toLocaleLowerCase()
   }
 
-  // test() {
+  // test = () => {
   //   console.log("HELLO FROM: ", this.entityName)
   // }
   // set setSchema(value: any) {
   //   this.schema = value
   // }
 
-  // registerEntity(): any {
+  // registerEntity = (): void => {
   //   const $query = `CREATE TABLE IF NOT EXISTS ${this.entityName} (${this.schema})`
   //   MySQLConnect.query($query)
   //   console.log(chalk.italic.redBright(this.entityName.toLocaleUpperCase()) + " was created")
@@ -82,6 +84,7 @@ export class Entity implements IEntity {
         ${this.conditions(Object.assign(where, { id }))}
       `
       MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        data = data.length > 0 ? data[0] : {}
         resolve(Object.assign(this, { data }))
       })
     })
