@@ -9,7 +9,7 @@ export function TestInsert() {
   INSERT into producer (name, country) values ("Salo", "Ukraine"), ("Zhora", "Russia")
 `)
   MySQLConnect.query(`
-    INSERT into product (name, sex, price, color, size, amount, producer, category)
+    INSERT into product (name, gender, price, color, size, amount, producer, category)
     values
     ("Buba","Buba", 123,  "white", "small", 1, 1, "kid"),
     ("Bubaaaa","Buba222", 323, "white", "big", 1, 1, "sport"),

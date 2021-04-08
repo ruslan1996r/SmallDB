@@ -1,37 +1,60 @@
 import { MySQLConnect } from "../database"
-import { IEntity, IArgs } from "./types"
-import chalk from "chalk"
+import { IEntity, IArgs, IEntityData } from "./types"
 
 export class Entity implements IEntity {
   data: any;
-  // schema: string = '';
+  conditions: IArgs = {
+    $btw: "BETWEEN",
+    $or: "OR"
+  }
 
   get entityName(): string {
     return this.constructor.name.toLocaleLowerCase()
   }
 
-  // test = () => {
-  //   console.log("HELLO FROM: ", this.entityName)
-  // }
-  // set setSchema(value: any) {
-  //   this.schema = value
-  // }
+  updateValuesAndKeys(fields: { [key: string]: any }): string {
+    let updateFields: string = ""
+    let index: number = 1;
+    for (let key in fields) {
+      updateFields += `${key} = "${fields[key]}" ${index < Object.keys(fields).length ? ", " : ""}`
+      index++
+    }
+    return updateFields
+  }
 
-  // registerEntity = (): void => {
-  //   const $query = `CREATE TABLE IF NOT EXISTS ${this.entityName} (${this.schema})`
-  //   MySQLConnect.query($query)
-  //   console.log(chalk.italic.redBright(this.entityName.toLocaleUpperCase()) + " was created")
-  // }
+  saveValuesAndKeys(fields: { [key: string]: any }): any {
+    let fieldsKeys: string = ''
+    let fieldsValues: string = ''
+    let index: number = 1;
+    for (let key in fields) {
+      fieldsKeys += `${key}${index < Object.keys(fields).length ? ", " : ""}`
+      fieldsValues += `"${fields[key]}"${index < Object.keys(fields).length ? ", " : ""}`
+      index++
+    }
+    return { fieldsKeys, fieldsValues }
+  }
 
-  conditions(args: IArgs) {
+  createCondition(queryObject: IArgs) {
+    const key = Object.keys(queryObject)[0]
+    const value = queryObject[key].join(' AND ')
+    return String(this.conditions[key] + " " + value)
+  }
+
+  where(args: IArgs) {
     if (Object.keys(args).length === 0) return ''
     let conditionQuery = 'WHERE'
     let index = 1
 
     for (const key in args) {
-      const queryPart = args[key];
+      let queryPart = ''
+      if (typeof args[key] === 'string' || typeof args[key] === 'number') {
+        queryPart = ` = "${args[key]}"`
+      }
+      if (typeof args[key] === 'object') {
+        queryPart = this.createCondition(args[key])
+      }
       const and = (index < Object.keys(args).length) ? 'AND' : ''
-      conditionQuery += ` ${key} = '${queryPart}' ${and}`
+      conditionQuery += ` ${key} ${queryPart} ${and}`
       index++
     }
     return conditionQuery
@@ -56,7 +79,7 @@ export class Entity implements IEntity {
     })
     const updatedData = await Promise.all(_data)
     this.data = updatedData
-    return this
+    return Object.assign(this, updatedData)
   }
 
   find(args: IArgs = {}) {
@@ -66,7 +89,7 @@ export class Entity implements IEntity {
       const _query = `
         SELECT ${select.join(',')} ${this.computedProps(computed)}
         FROM ${this.entityName}
-        ${this.conditions(where)}
+        ${this.where(where)}
       `
       MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
         resolve(Object.assign(this, { data }))
@@ -74,17 +97,52 @@ export class Entity implements IEntity {
     })
   }
 
-  findById(id: number | string, args: IArgs = {}) {
+  findById(id: number | string, args: IArgs = {}): Promise<IEntityData> {
     const { select = ['*'], where = {}, computed = {} } = args
 
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(",")} ${this.computedProps(computed)}
         FROM ${this.entityName}
-        ${this.conditions(Object.assign(where, { id }))}
+        ${this.where(Object.assign(where, { id }))}
       `
       MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         data = data.length > 0 ? data[0] : {}
+        resolve(Object.assign(this, { data }))
+      })
+    })
+  }
+  save(fields: { [key: string]: any }): Promise<IEntityData> {
+    const { fieldsKeys, fieldsValues } = this.saveValuesAndKeys(fields)
+    return new Promise((resolve, reject) => {
+      const _query = `
+        INSERT into ${this.entityName} (${fieldsKeys})
+        VALUES (${fieldsValues})
+      `
+      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        resolve(Object.assign(this, { data }))
+      })
+    })
+  }
+  updateById(id: string | number, fields: { [key: string]: any }, args: IArgs = {}): Promise<IEntityData> {
+    const { where = {} } = args
+    return new Promise((resolve, reject) => {
+      const _query = `
+        UPDATE ${this.entityName} SET ${this.updateValuesAndKeys(fields)}
+        ${this.where(Object.assign(where, { id }))}
+      `
+      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        if (err) reject(err)
+        resolve(Object.assign(this, { data }))
+      })
+    })
+  }
+
+  deleteById(id: string) {
+    return new Promise((resolve, reject) => {
+      const _query = `DELETE FROM ${this.entityName} WHERE id = ${id}`
+      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
     })
