@@ -3,8 +3,6 @@ import { product } from "./model"
 
 export class ProductService {
   public async getProducts(args: { [key: string]: any } = {}): Promise<IEntityData> {
-    // const result: any = await product.find(args)
-    console.log("args", args)
     const result: any = await product.find({
       computed: {
         avg_rate: 'SELECT AVG(rate) FROM product_rate WHERE product.id = product_rate.product'

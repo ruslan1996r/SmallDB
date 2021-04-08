@@ -83,12 +83,12 @@ export class Entity implements IEntity {
   }
 
   find(args: IArgs = {}) {
-    const { select = ["*"], where = {}, computed = {} } = args
+    const { select = ["*"], where = {}, computed = {}, from = this.entityName } = args
 
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(',')} ${this.computedProps(computed)}
-        FROM ${this.entityName}
+        FROM ${from}
         ${this.where(where)}
       `
       MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {

@@ -9,7 +9,7 @@ import bookingRouter from "./routes/booking"
 import productRateRouter from "./routes/productRate"
 
 const app = express()
-app.set("port", process.env.PORT || 4001)
+app.set("port", process.env.PORT || 4000)
 
 app.use(cors())
 app.use(express.json())

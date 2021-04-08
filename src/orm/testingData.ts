@@ -28,7 +28,11 @@ export function TestInsert() {
     INSERT into booking (sum, order_date, address, status, client, product)
     values
     (322, '05.06.2021', 'popkina 47', 'in_progress', 2, 1),
-    (1772, '05.06.2021', 'zhopkina 68', 'in_progress', 2, 2)
+    (1772, '05.06.2021', 'zhopkina 68', 'in_progress', 2, 2),
+    (51, '05.06.2021', 'zhopkina 111', 'success', 1, 1),
+    (76, '05.06.2021', 'zhopkina 3233', 'rejected', 2, 1),
+    (123, '05.06.2021', 'zhopkina 76766', 'in_progress', 1, 2),
+    (87, '05.06.2021', 'zhopkina 111', 'success', 3, 3)
   `)
 
   MySQLConnect.query(`

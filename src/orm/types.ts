@@ -30,6 +30,7 @@ export interface IArgs {
   computed?: {
     [key: string]: any
   },
+  from?: string,
   [key: string]: any
 }
 

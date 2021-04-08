@@ -9,7 +9,6 @@ class ProductController {
 
   public getProducts = async (req: Request, res: Response): Promise<Response<IEntityData>> => {
     try {
-      console.log("getProducts")
       const productData = req.body
       const result = await this.productService.getProducts(productData)
       return res.status(200).json(result)
