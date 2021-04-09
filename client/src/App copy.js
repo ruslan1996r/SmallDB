@@ -18,7 +18,7 @@ import Link from '@material-ui/core/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { RouterList } from "./components/Entities/routesList"
+import { RouterList } from "./components/Entities/RoutesList"
 import Router from "./Router";
 import { useStyles } from "./styles/makeStyles"
 import Navbar from "./components/App/Navbar"

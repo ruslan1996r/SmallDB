@@ -21,7 +21,9 @@ export function TestInsert() {
     values
     ('putin@mail.ru', 123456),
     ('obama@gmail.com', 887766),
-    ('poroshenko@ukr.ua', 1488);
+    ('poroshenko@ukr.ua', 1488),
+    ('vova@ukr.ua', 88123),
+    ('gena@ukr.ua', 777);
   `)
 
   MySQLConnect.query(`

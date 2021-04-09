@@ -57,7 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     }),
     width: theme.spacing(7),
     [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
+      width: theme.spacing(8),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -78,5 +78,32 @@ export const useStyles = makeStyles((theme) => ({
   },
   fixedHeight: {
     height: 240,
+  },
+  entityTitle: {
+    textAlign: "center",
+    marginTop: "10px",
+    fontSize: "1.1em"
+  },
+}));
+
+export const useTableStyles = makeStyles({
+  root: {
+    width: '100%',
+  },
+  container: {
+    maxHeight: '100%',
+  },
+});
+
+export const useModalStyles = makeStyles((theme) => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
   },
 }));

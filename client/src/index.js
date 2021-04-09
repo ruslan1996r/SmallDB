@@ -5,14 +5,17 @@ import { ThemeProvider } from '@material-ui/styles';
 
 import App from './App';
 import { theme } from "./styles/muiTheme"
+import { SmallState } from "./context/state"
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <SmallState>
         <App />
-      </ThemeProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+      </SmallState>
+    </ThemeProvider>
+  </BrowserRouter>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
