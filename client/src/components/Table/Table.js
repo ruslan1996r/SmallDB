@@ -14,7 +14,7 @@ import { TableActions } from "./TableActions"
 import { useTableStyles } from "../../styles/makeStyles"
 
 export default function DataTable(props) {
-  const { columns, rows } = props
+  const { columns, rows, changeModalShow } = props
   const classes = useTableStyles();
   return (
     <Paper className={classes.root}>
@@ -41,20 +41,8 @@ export default function DataTable(props) {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {column.id === 'actions' ?
-                          <TableActions /> :
-                          (column.format && typeof value === 'number' ? column.format(value) : value)
-                        }
-                        {/* <div>
-                            <Button disableElevation>
-                              <EditIcon style={{ color: "#3aa8ff" }} />
-                            </Button>
-                            <Button disableElevation>
-                              <DeleteIcon style={{ color: "red" }} />
-                            </Button>
-                          </div> :
-                          (column.format && typeof value === 'number' ? column.format(value) : value) */}
-                        {/* } */}
+                        {column.id === 'actions' ? <TableActions changeModalShow={changeModalShow} row={row} /> : value}
+                        {/* (column.format && typeof value === 'number' ? column.format(value) : value) */}
                       </TableCell>
                     );
                   })}

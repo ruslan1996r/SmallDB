@@ -3,25 +3,62 @@ export class Api {
   static client = {
     get: {
       url: this.#server + "/client/all",
-      options: { method: "POST" }
-    },
-    create: (body) => {
-      return {
-        url: this.#server + "/client/",
-        options: {
-          method: "POST",
-          body
-        }
+      options: {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        // body: JSON.stringify({ where: { id: 2 } })
       }
     },
-    update: (id) => ({ url: this.#server + "/client/" + id, method: "POST" }),
-    delete: (id) => ({ url: this.#server + "/client/" + id, method: "DELETE" }),
+    create: (body) => ({
+      url: this.#server + "/client",
+      options: {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    }),
+    update: (id, body) => ({
+      url: this.#server + "/client/" + id,
+      options: {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    }),
+    delete: (id) => ({ url: this.#server + "/client/" + id, options: { method: "DELETE" } }),
   }
   static booking = {
     get: {
       url: this.#server + "/booking/all",
       options: { method: "POST" }
-    }
+    },
+    create: (body) => ({
+      url: this.#server + "/booking",
+      options: {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    }),
+    update: (id, body) => ({
+      url: this.#server + "/booking/" + id,
+      options: {
+        method: "PUT",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    }),
+    delete: (id) => ({ url: this.#server + "/booking/" + id, options: { method: "DELETE" } }),
   }
   static product = {
     get: {

@@ -91,6 +91,7 @@ export class Entity implements IEntity {
         FROM ${from}
         ${this.where(where)}
       `
+      // console.log("_query", _query)
       MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
         resolve(Object.assign(this, { data }))
       })
