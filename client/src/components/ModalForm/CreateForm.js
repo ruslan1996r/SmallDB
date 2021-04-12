@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import Input from '@material-ui/core/Input';
+import React from 'react'
+// import Input from '@material-ui/core/Input';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import CheckIcon from '@material-ui/icons/Check';
@@ -11,7 +11,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 
 import { useInput } from '../../hooks/useInput'
-import { toUpper } from "../Table/TableUtils"
+// import { toUpper } from "../Table/TableUtils"
 import { GenericForm } from "../GenericForm/GenericForm"
 
 function CreateForm(props) {

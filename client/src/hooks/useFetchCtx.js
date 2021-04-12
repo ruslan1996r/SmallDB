@@ -12,6 +12,7 @@ export const useFetchCtx = (props, findConditions) => {
       setLoading(true);
       try {
         const newOptions = Object.assign(options, findConditions)
+        console.log("newOptions", newOptions)
         const res = await fetch(url, newOptions);
         const json = await res.json();
         setData(json);

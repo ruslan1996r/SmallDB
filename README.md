@@ -29,7 +29,7 @@
 Сортировка. 
   - Клиенты: от 1 до 5; от 6 до 10 количества заказов. Клиенты, которые хоть раз отменили заказ
     {
-        "from": "(SELECT COUNT(client) as total FROM booking group by client) as total_table",
+        "from": "(SELECT * , (SELECT COUNT(client) FROM booking where client = client.id) AS total FROM client) as client",
         "where": {
             "total": {
                 "$btw": [
@@ -39,6 +39,7 @@
             }
         }
     }
+    (SELECT * , (SELECT status FROM booking where client = client.id AND status = 'rejected') AS total FROM client) as client where total is not null
   
   - Заказы: по статусу
     `SELECT * FROM booking ORDER BY status;`

@@ -5,7 +5,9 @@ export class Entity implements IEntity {
   data: any;
   conditions: IArgs = {
     $btw: "BETWEEN",
-    $or: "OR"
+    $or: "OR",
+    // $not_null:"IS NOT NULL"
+    // $not_null: 'IS NOT NULL'
   }
 
   get entityName(): string {

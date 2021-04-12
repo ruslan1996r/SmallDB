@@ -16,6 +16,17 @@ import { useTableStyles } from "../../styles/makeStyles"
 export default function DataTable(props) {
   const { columns, rows, changeModalShow } = props
   const classes = useTableStyles();
+
+  const isDate = (key, val) => {
+    if (key.toLocaleLowerCase() === 'order_date') {
+      return val.substr(0, 10)
+    }
+    if (val === null) {
+      return '0'
+    }
+    return val
+  }
+
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
@@ -41,8 +52,10 @@ export default function DataTable(props) {
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {column.id === 'actions' ? <TableActions changeModalShow={changeModalShow} row={row} /> : value}
-                        {/* (column.format && typeof value === 'number' ? column.format(value) : value) */}
+                        {column.id === 'actions' ?
+                          <TableActions changeModalShow={changeModalShow} row={row} /> :
+                          isDate(column.id, value)
+                        }
                       </TableCell>
                     );
                   })}

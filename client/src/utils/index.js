@@ -15,3 +15,31 @@ export function onlyExisting(obj) {
   }
   return newObj
 }
+
+export function selectValToSql(val) {
+  // Нужно переделать этот метод
+  const vals = {
+    '1-5': {
+      "$btw": [1, 5]
+    },
+    '5-10': {
+      "$btw": [5, 10]
+    },
+    'rejected': "$not_null"
+  }
+  let query = {}
+  if (val === 'rejected') {
+    query = {
+      "from": "(SELECT * , (SELECT status FROM booking where client = client.id AND status = 'rejected') AS status FROM client) as client where status is not null"
+    }
+    return query
+  } else {
+    query = {
+      "from": "(SELECT * , (SELECT COUNT(client) FROM booking where client = client.id) AS total FROM client) as client",
+      "where": {
+        "total": vals[val]
+      }
+    }
+    return query
+  }
+}
