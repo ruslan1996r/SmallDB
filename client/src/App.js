@@ -12,6 +12,7 @@ import Router from "./Router";
 import { useStyles } from "./styles/makeStyles"
 import Navbar from "./components/App/Navbar"
 import DrawerContent from "./components/App/DrawerContent"
+import { AppAlert } from "./components/Alert/Alert"
 
 
 export default function Dashboard() {
@@ -45,6 +46,7 @@ export default function Dashboard() {
           handleDrawerClose={() => handleDrawerClose()}
         />
       </Drawer>
+      <AppAlert />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>

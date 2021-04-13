@@ -1,16 +1,10 @@
 import React, { useEffect } from 'react'
 import Input from '@material-ui/core/Input';
-// import Typography from '@material-ui/core/Typography';
-// import Button from '@material-ui/core/Button';
-// import CheckIcon from '@material-ui/icons/Check';
-// import CloseIcon from '@material-ui/icons/Close';
 
-// import { useInput } from '../../hooks/useInput'
 import { toUpper } from "../Table/TableUtils"
 import { purifySchema } from "../../utils"
 
 export const GenericForm = (props) => {
-  // const { state, setByKey, setValue } = useInput({})
   const { schema, state, setByKey, setValue, search } = props
   const selectStyles = {
     padding: "0.8em",
@@ -50,7 +44,11 @@ export const GenericForm = (props) => {
 
   let forms = []
   for (const key in schema) {
-    if (['status', 'total', 'expensessum'].indexOf(key.toLocaleLowerCase()) !== -1) {
+    let skip = ['total', 'expensessum']
+    if (search) {
+      skip.push("status")
+    }
+    if (skip.indexOf(key.toLocaleLowerCase()) !== -1) {
       continue
     }
     if (key.toLocaleLowerCase() === 'status') {
@@ -71,7 +69,7 @@ export const GenericForm = (props) => {
     forms.push(
       <Input
         type={inputType(key)}
-        style={{ padding: "0.8em", margin: "0 1em 0 0" }}
+        style={{ padding: "0.8em", marginRight: "1em" }}
         key={key}
         placeholder={toUpper(key)}
         disabled={isDisabled(key)}

@@ -4,12 +4,11 @@ export const TYPES = {
   setData: "setData",
   createData: "createData",
   deleteData: "deleteData",
-  updateData: "updateData"
+  updateData: "updateData",
+  setAlert: "setAlert"
 }
 
 const Reducer = (state, { type, payload }) => {
-  // console.log("payloadpayload", payload)
-  // console.log("STATE: ", state)
   switch (type) {
     case TYPES.changeModalShow:
       return {
@@ -30,9 +29,16 @@ const Reducer = (state, { type, payload }) => {
         data: payload
       }
     case TYPES.createData:
-      return {
-        ...state,
-        data: [...state.data, payload]
+      if (payload.status === 400) {
+        return {
+          ...state,
+          alertInfo: payload
+        }
+      } else {
+        return {
+          ...state,
+          data: [...state.data, payload]
+        }
       }
     case TYPES.deleteData:
       return {
@@ -46,6 +52,11 @@ const Reducer = (state, { type, payload }) => {
       return {
         ...state,
         data: newData
+      }
+    case TYPES.setAlert:
+      return {
+        ...state,
+        alertInfo: payload
       }
     default:
       break;

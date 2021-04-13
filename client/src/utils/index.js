@@ -16,6 +16,23 @@ export function onlyExisting(obj) {
   return newObj
 }
 
+export const getConditions = ({ computed, state, select = {} }) => {
+  const sortConditions = selectValToSql(select.state) || {}
+  let body = {
+    where: onlyExisting({ ...state, ...sortConditions.where }),
+  }
+  if (select.state) {
+    body['from'] = sortConditions.from
+  }
+  if (computed) {
+    body['computed'] = computed
+  }
+  const conditions = {
+    body: JSON.stringify(body)
+  }
+  return conditions
+}
+
 export function selectValToSql(val) {
   // Нужно переделать этот метод
   const vals = {

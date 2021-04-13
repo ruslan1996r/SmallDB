@@ -1,11 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-// import Input from '@material-ui/core/Input';
-// import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-// import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
-// // import CheckIcon from '@material-ui/icons/Check';
-// import SearchIcon from '@material-ui/icons/Search';
-// import CloseIcon from '@material-ui/icons/Close';
 
 import DataTable from "../components/Table/Table"
 import { SmallContext } from "../context/state"
@@ -18,7 +11,7 @@ import FormManager from "../components/ModalForm/FormManager"
 import TableHeader from "../components/Table/TableHeader"
 import { GenericForm } from "../components/GenericForm/GenericForm"
 import { useInput } from '../hooks/useInput'
-import { onlyExisting, purifySchema, selectValToSql } from "../utils"
+import { purifySchema, getConditions } from "../utils"
 
 function Client() {
   const { changeModalShow, modalType, data, isLoading } = useContext(SmallContext)
@@ -39,14 +32,11 @@ function Client() {
     await fetch(url, options)
   }
   const createAsync = async (item) => {
-    // if (['status', 'total', 'expensessum']item.hasOwnProperty('id')) {
     delete item.id
     delete item.total
     delete item.status
     delete item.expensesSum
-    // }
     const { url, options } = Api.client.create(item)
-    console.log("INFO: ", url, options, item)
     const res = await fetch(url, options)
     const created = await res.json()
     return created
@@ -59,25 +49,8 @@ function Client() {
     await fetch(url, options)
   }
 
-  const getConditions = (computed) => {
-    const sortConditions = selectValToSql(select.state) || {}
-    let body = {
-      where: onlyExisting({ ...state, ...sortConditions.where }),
-    }
-    if (select.state) {
-      body['from'] = sortConditions.from
-    }
-    if (computed) {
-      body['computed'] = computed
-    }
-    const conditions = {
-      body: JSON.stringify(body)
-    }
-    return conditions
-  }
-
   const findMatching = () => {
-    const conditions = getConditions()
+    const conditions = getConditions({ select, state })
     setConditions(conditions)
   }
 
@@ -91,7 +64,7 @@ function Client() {
     const computedAmount = {
       "expensesSum": "SELECT SUM(sum) FROM booking WHERE client = client.id"
     }
-    setConditions(getConditions(computedAmount))
+    setConditions(getConditions({ select, state, computed: computedAmount }))
   }
 
   return (
@@ -104,6 +77,7 @@ function Client() {
         selectState={select.state}
         selectSetValue={select.setState}
         getAmount={getAmount}
+        tableTitle="Client table"
       />
       <div style={{ width: "100%" }}>
         <div style={{ display: "flex", flexWrap: "wrap" }}>

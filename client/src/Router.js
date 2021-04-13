@@ -9,9 +9,14 @@ import Booking from "./pages/booking"
 import Category from "./pages/category"
 import NotFound from './pages/notFound';
 
+function Home() {
+  return <div>Home</div>
+}
+
 function Router() {
   return (
     <Switch>
+      <Route component={Home} path="/" exact />
       <Route component={Client} path="/client" exact />
       <Route component={Product} path="/product" exact />
       <Route component={ProductRate} path="/product_rate" exact />

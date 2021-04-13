@@ -10,7 +10,8 @@ export const SmallState = (props) => {
     modalType: "create",
     item: null,
     data: [],
-    isLoading: false
+    isLoading: false,
+    alertInfo: null
   }
   const [state, dispatch] = useReducer(Reducer, initialState)
 
@@ -38,6 +39,10 @@ export const SmallState = (props) => {
     type: TYPES.updateData,
     payload: { id, item }
   })
+  const setAlert = (data) => dispatch({
+    type: TYPES.setAlert,
+    payload: data
+  })
 
   return (
     <SmallContext.Provider
@@ -47,12 +52,14 @@ export const SmallState = (props) => {
         data: state.data,
         item: state.item,
         isLoading: state.isLoading,
+        alertInfo: state.alertInfo,
         changeModalShow,
         setLoading,
         setData,
         createData,
         deleteData,
-        updateData
+        updateData,
+        setAlert
       }}
     >
       {props.children}

@@ -93,8 +93,9 @@ export class Entity implements IEntity {
         FROM ${from}
         ${this.where(where)}
       `
-      // console.log("_query", _query)
+      console.log("_query", _query)
       MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
+        if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
     })
@@ -110,6 +111,7 @@ export class Entity implements IEntity {
         ${this.where(Object.assign(where, { id }))}
       `
       MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        if (err) reject(err)
         data = data.length > 0 ? data[0] : {}
         resolve(Object.assign(this, { data }))
       })
@@ -123,6 +125,7 @@ export class Entity implements IEntity {
         VALUES (${fieldsValues})
       `
       MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+        if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
     })

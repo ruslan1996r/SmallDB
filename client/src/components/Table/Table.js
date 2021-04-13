@@ -6,12 +6,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import EditIcon from '@material-ui/icons/Edit';
-// import Button from '@material-ui/core/Button';
-import { TableActions } from "./TableActions"
 
 import { useTableStyles } from "../../styles/makeStyles"
+import { TableActions } from "./TableActions"
 
 export default function DataTable(props) {
   const { columns, rows, changeModalShow } = props

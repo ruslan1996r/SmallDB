@@ -1,7 +1,4 @@
-import React, { useContext } from 'react'
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import React, { useContext, useEffect, useState } from 'react'
 
 import DataTable from "../components/Table/Table"
 import { SmallContext } from "../context/state"
@@ -11,21 +8,32 @@ import { generateColumns } from "../components/Table/TableUtils"
 import { Loader } from "../components/Loader/Loader"
 import ModalPortal from "../components/Modal/ModalPortal"
 import FormManager from "../components/ModalForm/FormManager"
+import TableHeader from "../components/Table/TableHeader"
+import { GenericForm } from "../components/GenericForm/GenericForm"
+import { useInput } from '../hooks/useInput'
+import { purifySchema, getConditions } from "../utils"
 
 function Booking() {
-  // const { response, isLoading } = useFetch(Api.booking.get)
-  const { changeModalShow, modalType } = useContext(SmallContext)
-  const { data, isLoading } = useFetchCtx(Api.booking.get)
-  const entitySchema = data.length && data[0] ? data[0] : []
+  const { changeModalShow, modalType, data, isLoading } = useContext(SmallContext)
+  const { state, setByKey, setValue } = useInput({})
+  const [findConditions, setConditions] = useState({})
+  const [entitySchema, setSchema] = useState("")
+  // const { data, isLoading } = useFetchCtx(Api.booking.get)
+  // const entitySchema = data.length && data[0] ? data[0] : []
+  useEffect(() => {
+    const schema = data.length && data[0] ? data[0] : []
+    setSchema(schema)
+  }, [data])
+
+  useFetchCtx(Api.booking.get, findConditions)
 
   const removeAsync = async (id) => {
     const { url, options } = Api.booking.delete(id)
     await fetch(url, options)
   }
   const createAsync = async (item) => {
-    if (item.hasOwnProperty('id')) {
-      delete item.id
-    }
+    delete item.id
+
     const { url, options } = Api.booking.create(item)
     const res = await fetch(url, options)
     const created = await res.json()
@@ -36,15 +44,48 @@ function Booking() {
     await fetch(url, options)
   }
 
+  const findMatching = () => {
+    const conditions = getConditions({ state })
+    setConditions(conditions)
+  }
+  const clearForm = () => {
+    setValue(purifySchema(entitySchema))
+    setConditions({ body: "" })
+  }
+
   return (
     <React.Fragment>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+      {/* <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
         <Typography component="h1" variant="h6" color="inherit" noWrap style={{ marginBottom: "10px" }}>
           Booking table
         </Typography>
         <Button disableElevation onClick={() => changeModalShow(true, 'create', entitySchema)}>
           <AddCircleOutlineIcon style={{ color: "#2ce62c" }} fontSize="large" />
         </Button>
+      </div> */}
+      <TableHeader
+        changeModalShow={changeModalShow}
+        entitySchema={entitySchema}
+        clearForm={clearForm}
+        findMatching={findMatching}
+        //selectState={select.state}
+        //selectSetValue={select.setState}
+        //getAmount={getAmount}
+        tableTitle="Booking table"
+      />
+      <div style={{ width: "100%" }}>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {!isLoading &&
+            <GenericForm
+              schema={entitySchema}
+              state={state}
+              setByKey={setByKey}
+              setValue={setValue}
+              search={true}
+            />}
+        </div>
+        <div style={{ textAlign: "right", margin: "1em 1em" }}>
+        </div>
       </div>
       {modalType &&
         <ModalPortal>
@@ -56,6 +97,7 @@ function Booking() {
         </ModalPortal>
       }
       {isLoading && <Loader />}
+      {(data && data.length === 0) && <h1>Table is empty</h1>}
       {data &&
         <DataTable
           rows={data}

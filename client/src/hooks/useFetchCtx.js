@@ -3,7 +3,7 @@ import React from 'react'
 import { SmallContext } from "../context/state"
 
 export const useFetchCtx = (props, findConditions) => {
-  const { data, setData, isLoading, setLoading } = React.useContext(SmallContext)
+  const { data, setData, isLoading, setLoading, setAlert } = React.useContext(SmallContext)
   const { url, options = {} } = props
 
   const [error, setError] = React.useState(null);
@@ -12,12 +12,12 @@ export const useFetchCtx = (props, findConditions) => {
       setLoading(true);
       try {
         const newOptions = Object.assign(options, findConditions)
-        console.log("newOptions", newOptions)
         const res = await fetch(url, newOptions);
         const json = await res.json();
         setData(json);
         setLoading(false)
       } catch (error) {
+        setAlert(error)
         setError(error);
       }
     };

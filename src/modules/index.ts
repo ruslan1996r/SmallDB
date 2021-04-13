@@ -19,14 +19,15 @@ function InitEntities(): void {
     id INT auto_increment primary key,
     name VARCHAR(255) UNIQUE
   `
+  // color ENUM('white', 'black', 'red'),
   const productSchema = `
     id INT auto_increment primary key,
     name VARCHAR(255),
     gender VARCHAR(255),
     price INT(255),
 
-    color ENUM('white', 'black', 'red'),
-    size ENUM('small', 'big'),
+    color VARCHAR(255),
+    size ENUM('small', 'middle', 'big'),
     amount INT(255),
 
     producer INT,
