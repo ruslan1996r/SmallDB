@@ -6,8 +6,9 @@ export class Entity implements IEntity {
   conditions: IArgs = {
     $btw: "BETWEEN",
     $or: "OR",
-    // $not_null:"IS NOT NULL"
-    // $not_null: 'IS NOT NULL'
+    $in: "IN",
+    $ne: "NOT IN",
+    $nen: "IS NOT NULL"
   }
 
   get entityName(): string {
@@ -38,8 +39,19 @@ export class Entity implements IEntity {
 
   createCondition(queryObject: IArgs) {
     const key = Object.keys(queryObject)[0]
-    const value = queryObject[key].join(' AND ')
-    return String(this.conditions[key] + " " + value)
+
+    let condition = ''
+    if (['$in', '$ne'].indexOf(key) !== -1) {
+      const _key = Object.keys(queryObject)[0]
+      condition = String(this.conditions[_key] + " " + queryObject[key])
+    }
+    if (['$btw', '$or'].indexOf(key) !== -1) {
+      condition = String(this.conditions[key] + " " + queryObject[key].join(' AND '))
+    }
+    if (['$nen'].indexOf(key) !== -1) {
+      condition = String(this.conditions[key])
+    }
+    return condition
   }
 
   where(args: IArgs) {
@@ -85,13 +97,14 @@ export class Entity implements IEntity {
   }
 
   find(args: IArgs = {}) {
-    const { select = ["*"], where = {}, computed = {}, from = this.entityName } = args
-
+    const { select = ["*"], where = {}, computed = {}, from = this.entityName, sort = '' } = args
+    const orderBy = sort ? `ORDER BY ${sort} DESC` : ""
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(',')} ${this.computedProps(computed)}
         FROM ${from}
         ${this.where(where)}
+        ${orderBy}
       `
       console.log("_query", _query)
       MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {

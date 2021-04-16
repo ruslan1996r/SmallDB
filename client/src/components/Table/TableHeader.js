@@ -7,9 +7,23 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import SortIcon from '@material-ui/icons/Sort';
 
 function TableHeader(props) {
-  const { changeModalShow, entitySchema, clearForm, findMatching, selectState, selectSetValue, getAmount, tableTitle } = props
+  const {
+    changeModalShow,
+    entitySchema,
+    clearForm,
+    findMatching,
+    selectState,
+    selectSetValue,
+    getAmount,
+    sortBy,
+    tableTitle,
+    selectTitle,
+    selectOptions,
+    selectRight = '-130px'
+  } = props
 
   return (
     <div style={{ width: "100%", alignItems: "right" }}>
@@ -21,6 +35,11 @@ function TableHeader(props) {
           {getAmount &&
             <Button disableElevation onClick={getAmount}>
               Get amount <AttachMoneyIcon fontSize="large" style={{ color: "yellow", marginLeft: "5px" }} />
+            </Button>
+          }
+          {sortBy &&
+            <Button disableElevation onClick={sortBy}>
+              Sort by status <SortIcon fontSize="large" style={{ color: "yellow", marginLeft: "5px" }} />
             </Button>
           }
           <Button disableElevation onClick={clearForm}>
@@ -37,16 +56,16 @@ function TableHeader(props) {
       {selectState &&
         <div style={{ textAlign: "right" }}>
           {!Object.keys(selectState).length &&
-            <span style={{ marginRight: "-130px", color: "#a4a3a3", fontSize: "16px" }}>Sort by booking</span>
+            <span style={{ marginRight: selectRight, color: "#a4a3a3", fontSize: "16px" }}>{selectTitle}</span>
           }
           <Select
             value={selectState}
             onChange={selectSetValue}
             style={{ margin: "10px", width: "200px" }}
           >
-            <MenuItem value={'1-5'}>1-5 bookings</MenuItem>
-            <MenuItem value={'5-10'}>5-10 bookings</MenuItem>
-            <MenuItem value={'rejected'}>At least 1 reject</MenuItem>
+            {selectOptions.map(opt => {
+              return <MenuItem key={opt.value} value={opt.value}>{opt.title}</MenuItem>
+            })}
           </Select>
         </div>
       }

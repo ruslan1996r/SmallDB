@@ -34,7 +34,7 @@ export function AppAlert(props) {
       <Alert severity={type}>
         <AlertTitle>Error</AlertTitle>
         <p>{alertInfo && alertInfo.message.sqlMessage}</p>
-        <CloseIcon fontSize="normal" onClick={() => setAlert(null)} style={closeStyle} />
+        <CloseIcon fontSize="default" onClick={() => setAlert(null)} style={closeStyle} />
       </Alert>
     </Collapse>
   )

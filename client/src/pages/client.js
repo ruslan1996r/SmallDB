@@ -13,6 +13,21 @@ import { GenericForm } from "../components/GenericForm/GenericForm"
 import { useInput } from '../hooks/useInput'
 import { purifySchema, getConditions } from "../utils"
 
+const userOptions = [
+  {
+    value: '1-5',
+    title: "1-5 bookings"
+  },
+  {
+    value: '5-10',
+    title: "5-10 bookings"
+  },
+  {
+    value: 'rejected',
+    title: "At least 1 reject"
+  }
+]
+
 function Client() {
   const { changeModalShow, modalType, data, isLoading } = useContext(SmallContext)
   const { state, setByKey, setValue } = useInput({})
@@ -50,7 +65,7 @@ function Client() {
   }
 
   const findMatching = () => {
-    const conditions = getConditions({ select, state })
+    const conditions = getConditions({ select, state, entity: "client" })
     setConditions(conditions)
   }
 
@@ -78,6 +93,8 @@ function Client() {
         selectSetValue={select.setState}
         getAmount={getAmount}
         tableTitle="Client table"
+        selectTitle="Find by booking"
+        selectOptions={userOptions}
       />
       <div style={{ width: "100%" }}>
         <div style={{ display: "flex", flexWrap: "wrap" }}>

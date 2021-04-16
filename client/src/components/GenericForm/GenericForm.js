@@ -44,7 +44,7 @@ export const GenericForm = (props) => {
 
   let forms = []
   for (const key in schema) {
-    let skip = ['total', 'expensessum']
+    let skip = ['avg_rate', 'total', 'expensessum']
     if (search) {
       skip.push("status")
     }
@@ -61,7 +61,7 @@ export const GenericForm = (props) => {
           value={state[key]}
           onChange={e => setByKey(e, key)}
         >
-          {statuses.map(status => <option style={{ textAlign: "left" }} value={status}>{status}</option>)}
+          {statuses.map(status => <option key={status} style={{ textAlign: "left" }} value={status}>{status}</option>)}
         </select>
       )
       continue

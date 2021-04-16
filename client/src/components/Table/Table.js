@@ -23,7 +23,6 @@ export default function DataTable(props) {
     }
     return val
   }
-
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>

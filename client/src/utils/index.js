@@ -9,15 +9,18 @@ export function purifySchema(schema) {
 export function onlyExisting(obj) {
   let newObj = {}
   for (const key in obj) {
-    if (obj[key] && obj[key] !== '') {
+    if (obj[key] && obj[key] !== '' && Object.keys(obj[key]).length !== 0) {
       newObj[key] = obj[key]
     }
   }
+  // console.log("newObj", newObj)
   return newObj
 }
 
-export const getConditions = ({ computed, state, select = {} }) => {
-  const sortConditions = selectValToSql(select.state) || {}
+export const getConditions = ({ computed, state, sort, select = {}, entity }) => {
+  const sortConditions = selectValToSql(select.state, entity) || {}
+  const _sort = sort || (select.state === 'avg_rate' && select.state)
+
   let body = {
     where: onlyExisting({ ...state, ...sortConditions.where }),
   }
@@ -27,13 +30,16 @@ export const getConditions = ({ computed, state, select = {} }) => {
   if (computed) {
     body['computed'] = computed
   }
+  if (_sort) {
+    body['sort'] = _sort// sort
+  }
   const conditions = {
     body: JSON.stringify(body)
   }
   return conditions
 }
 
-export function selectValToSql(val) {
+export function selectValToSql(val, entity) {
   // Нужно переделать этот метод
   const vals = {
     '1-5': {
@@ -45,9 +51,34 @@ export function selectValToSql(val) {
     'rejected': "$not_null"
   }
   let query = {}
+  if (entity === 'booking') {
+    query = {
+      "where": {
+        "status": val
+      }
+    }
+    return query
+  }
+  if (entity === 'product') {
+    if (Object.keys(val).length > 0) {
+      query = {
+        "where": {
+          "id": {
+            [val]: "(SELECT product FROM booking)"
+          }
+        }
+      }
+    }
+    return query
+  }
   if (val === 'rejected') {
     query = {
-      "from": "(SELECT * , (SELECT status FROM booking where client = client.id AND status = 'rejected') AS status FROM client) as client where status is not null"
+      "from": "(SELECT * , (SELECT status FROM booking where client = client.id AND status = 'rejected') AS status FROM client) as client", // where status is not null
+      "where": {
+        "status": {
+          "$nen": "NOT NULL"
+        }
+      }
     }
     return query
   } else {

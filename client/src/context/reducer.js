@@ -24,9 +24,16 @@ const Reducer = (state, { type, payload }) => {
       }
     // Data operations
     case TYPES.setData:
-      return {
-        ...state,
-        data: payload
+      if (payload.status === 400) {
+        return {
+          ...state,
+          alertInfo: payload
+        }
+      } else {
+        return {
+          ...state,
+          data: payload
+        }
       }
     case TYPES.createData:
       if (payload.status === 400) {

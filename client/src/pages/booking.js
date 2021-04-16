@@ -13,13 +13,28 @@ import { GenericForm } from "../components/GenericForm/GenericForm"
 import { useInput } from '../hooks/useInput'
 import { purifySchema, getConditions } from "../utils"
 
+const bookingOptions = [
+  {
+    value: 'in_progress',
+    title: "In progress"
+  },
+  {
+    value: 'success',
+    title: "Success"
+  },
+  {
+    value: 'rejected',
+    title: "Rejected"
+  }
+]
+
 function Booking() {
   const { changeModalShow, modalType, data, isLoading } = useContext(SmallContext)
   const { state, setByKey, setValue } = useInput({})
+  const select = useInput({})
   const [findConditions, setConditions] = useState({})
   const [entitySchema, setSchema] = useState("")
-  // const { data, isLoading } = useFetchCtx(Api.booking.get)
-  // const entitySchema = data.length && data[0] ? data[0] : []
+
   useEffect(() => {
     const schema = data.length && data[0] ? data[0] : []
     setSchema(schema)
@@ -45,33 +60,38 @@ function Booking() {
   }
 
   const findMatching = () => {
-    const conditions = getConditions({ state })
+    const conditions = getConditions({ select, state, entity: "booking" })
     setConditions(conditions)
   }
   const clearForm = () => {
     setValue(purifySchema(entitySchema))
     setConditions({ body: "" })
+    select.setValue({})
+  }
+
+  const sortBy = () => {
+    const conditions = getConditions({
+      select,
+      state,
+      sort: "status",
+      entity: "booking"
+    })
+    setConditions(conditions)
   }
 
   return (
     <React.Fragment>
-      {/* <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-        <Typography component="h1" variant="h6" color="inherit" noWrap style={{ marginBottom: "10px" }}>
-          Booking table
-        </Typography>
-        <Button disableElevation onClick={() => changeModalShow(true, 'create', entitySchema)}>
-          <AddCircleOutlineIcon style={{ color: "#2ce62c" }} fontSize="large" />
-        </Button>
-      </div> */}
       <TableHeader
         changeModalShow={changeModalShow}
         entitySchema={entitySchema}
         clearForm={clearForm}
         findMatching={findMatching}
-        //selectState={select.state}
-        //selectSetValue={select.setState}
-        //getAmount={getAmount}
+        selectState={select.state}
+        selectSetValue={select.setState}
+        selectOptions={bookingOptions}
+        sortBy={sortBy}
         tableTitle="Booking table"
+        selectTitle="Sort by status"
       />
       <div style={{ width: "100%" }}>
         <div style={{ display: "flex", flexWrap: "wrap" }}>
