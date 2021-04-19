@@ -4,9 +4,10 @@
   - Выход
 
 Отчёты (клиенты, продажи, товары):
-  - Продажи. Success за какое-то время
+  - Продажи. Success за какое-то время  <!-- Done -->
+  <!-- SELECT * FROM (SELECT * , (SELECT status FROM booking where product = product.id AND status = 'success') AS status FROM product) as products where status = 'success'; -->
   - Клиенты. Мыло, айдишки товаров и его общая сумма заказов
-  - Товары. Сколько раз куплен
+  - Товары. Сколько раз куплен <!-- Done -->
   Желательно всё выводить по какой-то дате (за месяц/неделю и т.д.)
 
 Формы (клиенты, заказы, товары, изготовители, оцинки)
@@ -60,3 +61,6 @@ const res = await find({
 })
 const pop = await res.eager("client")
 
+<!-- Дополнительные таблицы: -->
+Товар-Оценка товара (id товара, id оценки)
+Заказ-Товар (id заказа, id товара)

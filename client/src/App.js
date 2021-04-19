@@ -6,6 +6,9 @@ import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
 
 import { RouterList } from "./components/Entities/RoutesList"
 import Router from "./Router";
@@ -13,7 +16,26 @@ import { useStyles } from "./styles/makeStyles"
 import Navbar from "./components/App/Navbar"
 import DrawerContent from "./components/App/DrawerContent"
 import { AppAlert } from "./components/Alert/Alert"
+import { entities } from "./components/Entities/entitiesList"
 
+
+export const reports = [
+  {
+    route: "booking/report",
+    title: "Booking",
+    icon: <TrendingUpIcon style={{ color: "#3aa8ff" }} />
+  },
+  {
+    route: "client/report",
+    title: "Client",
+    icon: <PermContactCalendarIcon style={{ color: "yellow" }} />
+  },
+  {
+    route: "product/report",
+    title: "Product",
+    icon: <AssessmentIcon style={{ color: "orange" }} />
+  }
+]
 
 export default function Dashboard() {
   const classes = useStyles();
@@ -41,7 +63,8 @@ export default function Dashboard() {
         open={open}
       >
         <DrawerContent
-          render={() => <RouterList />}
+          routes={() => <RouterList routes={entities} />}
+          reports={() => <RouterList routes={reports} />}
           classes={classes}
           handleDrawerClose={() => handleDrawerClose()}
         />
@@ -49,7 +72,7 @@ export default function Dashboard() {
       <AppAlert />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
+        <Container maxWidth="lg" className={classes.container} id="height">
           <Grid container spacing={3}>
             <Router />
           </Grid>

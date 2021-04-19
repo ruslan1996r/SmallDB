@@ -43,6 +43,14 @@ class ClientController {
       return res.status(400).json({ status: 400, message: e })
     }
   }
+  public clientsReport = async (req: Request, res: Response): Promise<any> => {
+    try {
+      const result: any = await this.clientService.clientsReport()
+      return res.status(200).sendFile(result)
+    } catch (e) {
+      return res.status(400).json({ status: 400, message: e })
+    }
+  }
 }
 
 export default new ClientController(new ClientService)

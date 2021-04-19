@@ -44,6 +44,22 @@ class ProductController {
       return res.status(400).json({ status: 400, message: e })
     }
   }
+  public productReport = async (req: Request, res: Response): Promise<any> => {
+    try {
+      const result: any = await this.productService.productReport()
+      return res.status(200).sendFile(result)
+    } catch (e) {
+      return res.status(400).json({ status: 400, message: e })
+    }
+  }
+  // public salesReport = async (req: Request, res: Response): Promise<any> => {
+  //   try {
+  //     const result: any = await this.productService.salesReport()
+  //     return res.status(200).sendFile(result)
+  //   } catch (e) {
+  //     return res.status(400).json({ status: 400, message: e })
+  //   }
+  // }
 }
 
 export default new ProductController(new ProductService)

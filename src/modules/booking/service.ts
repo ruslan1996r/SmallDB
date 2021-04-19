@@ -1,4 +1,5 @@
 import { IEntityData } from './../../orm/types';
+import { generateTable } from "../../utils/generateTable"
 import { booking } from "./model"
 
 export class BookingService {
@@ -18,5 +19,34 @@ export class BookingService {
   public async deleteBooking(id: string): Promise<string> {
     await booking.deleteById(id)
     return `Booking with id "${id}" was deleted`
+  }
+  public async salesReport(): Promise<any> {
+    const result: any = await booking.find({
+      select: [
+        'booking.id as OrderId',
+        'product.id as ProdId',
+        'product.amount',
+        'product.name',
+        'product.gender',
+        'product.price',
+        'product.color',
+        'product.size',
+        'product.category',
+        'producer.name as producer',
+        // 'booking.status',
+      ],
+      // from: "(SELECT * , (SELECT status FROM booking where product = product.id AND status = 'success') AS status FROM product) as product", // products
+      from: "booking RIGHT OUTER JOIN product ON booking.product = product.id",
+      where: {
+        status: 'success'
+      },
+      join: {
+        // $roj: "producer",
+        // joinWith: "product"
+        $roj: "producer",
+        joinWith: "product"
+      }
+    })
+    return await generateTable(result.data, 'sales', 'Report on all products that have already been sold (with "Success" status)')
   }
 }

@@ -4,9 +4,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { entities } from "./entitiesList"
+// import { entities } from "./entitiesList"
 
-export const RouterList = () => {
+export const RouterList = (props) => {
+  const { routes } = props
   let history = useHistory();
 
   const toRoute = (route) => {
@@ -15,7 +16,7 @@ export const RouterList = () => {
 
   return (
     <div>
-      {entities.map(e => (
+      {routes.map(e => (
         <ListItem button key={e.route} onClick={() => toRoute(e.route)}>
           <ListItemIcon>
             {e.icon}

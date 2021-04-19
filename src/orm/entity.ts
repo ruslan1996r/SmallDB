@@ -2,6 +2,7 @@ import { MySQLConnect } from "../database"
 import { IEntity, IArgs, IEntityData } from "./types"
 
 export class Entity implements IEntity {
+  MySQLConnect = MySQLConnect
   data: any;
   conditions: IArgs = {
     $btw: "BETWEEN",
@@ -9,6 +10,10 @@ export class Entity implements IEntity {
     $in: "IN",
     $ne: "NOT IN",
     $nen: "IS NOT NULL"
+  };
+  joins: { [key: string]: any } = {
+    $roj: "RIGHT OUTER JOIN",
+    $loj: "LEFT OUTER JOIN"
   }
 
   get entityName(): string {
@@ -74,6 +79,17 @@ export class Entity implements IEntity {
     return conditionQuery
   }
 
+  join(joinObject: { [key: string]: any }): string {
+    const [joinKey, joinWith]: string[] = Object.keys(joinObject) //[0] // $roj, ...
+    if (!joinKey) {
+      return ""
+    }
+    const joinQuery: string = this.joins[joinKey] // RIGHT OUTER JOIN
+    const joinedEntity = joinObject[joinKey] // "producer"
+    const mainEntity = joinObject[joinWith] || this.entityName
+    return ` ${joinQuery} ${joinedEntity} ON ${mainEntity}.${joinedEntity} = ${joinedEntity}.id` //${mainEntity}.id`
+  }
+
   computedProps(args: IArgs) {
     if (Object.keys(args).length === 0) return ''
     let computedQuery = ', '
@@ -97,17 +113,18 @@ export class Entity implements IEntity {
   }
 
   find(args: IArgs = {}) {
-    const { select = ["*"], where = {}, computed = {}, from = this.entityName, sort = '' } = args
+    const { select = ["*"], where = {}, computed = {}, from = this.entityName, sort = '', join = {} } = args
     const orderBy = sort ? `ORDER BY ${sort} DESC` : ""
     return new Promise((resolve, reject) => {
       const _query = `
         SELECT ${select.join(',')} ${this.computedProps(computed)}
         FROM ${from}
+        ${this.join(join)}
         ${this.where(where)}
         ${orderBy}
       `
       console.log("_query", _query)
-      MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
+      this.MySQLConnect.query(_query, (err: Error, data: { [key: string]: any }, fields: any) => {
         if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
@@ -123,7 +140,7 @@ export class Entity implements IEntity {
         FROM ${this.entityName}
         ${this.where(Object.assign(where, { id }))}
       `
-      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+      this.MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         if (err) reject(err)
         data = data.length > 0 ? data[0] : {}
         resolve(Object.assign(this, { data }))
@@ -137,7 +154,7 @@ export class Entity implements IEntity {
         INSERT into ${this.entityName} (${fieldsKeys})
         VALUES (${fieldsValues})
       `
-      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+      this.MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
@@ -150,7 +167,7 @@ export class Entity implements IEntity {
         UPDATE ${this.entityName} SET ${this.updateValuesAndKeys(fields)}
         ${this.where(Object.assign(where, { id }))}
       `
-      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+      this.MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })
@@ -160,7 +177,7 @@ export class Entity implements IEntity {
   deleteById(id: string) {
     return new Promise((resolve, reject) => {
       const _query = `DELETE FROM ${this.entityName} WHERE id = ${id}`
-      MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
+      this.MySQLConnect.query(_query, (err: any, data: { [key: string]: any }, fields: any) => {
         if (err) reject(err)
         resolve(Object.assign(this, { data }))
       })

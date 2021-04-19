@@ -1,4 +1,5 @@
 import { IEntityData } from './../../orm/types';
+import { generateTable } from "../../utils/generateTable"
 import { client } from "./model"
 
 export class ClientService {
@@ -18,5 +19,13 @@ export class ClientService {
   public async deleteClient(id: string): Promise<string> {
     await client.deleteById(id)
     return `Client with id "${id}" was deleted`
+  }
+  public async clientsReport(): Promise<any> {
+    const result: any = await client.find({
+      computed: {
+        spent: "SELECT sum(sum) FROM booking where client = client.id"
+      }
+    })
+    return await generateTable(result.data, 'clients', 'Report on the expenses of all clients ')
   }
 }

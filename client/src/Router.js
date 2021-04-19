@@ -7,11 +7,9 @@ import ProductRate from "./pages/productRate"
 import Producer from "./pages/producer"
 import Booking from "./pages/booking"
 import Category from "./pages/category"
+import Report from "./pages/report"
+import Home from "./pages/home"
 import NotFound from './pages/notFound';
-
-function Home() {
-  return <div>Home</div>
-}
 
 function Router() {
   return (
@@ -23,6 +21,9 @@ function Router() {
       <Route component={Producer} path="/producer" exact />
       <Route component={Booking} path="/booking" exact />
       <Route component={Category} path="/category" exact />
+      <Route component={() => <Report routeProp="booking" />} path="/booking/report" exact />
+      <Route component={() => <Report routeProp="client" />} path="/client/report" exact />
+      <Route component={() => <Report routeProp="product" />} path="/product/report" exact />
       <Route component={NotFound} />
     </Switch>
   )

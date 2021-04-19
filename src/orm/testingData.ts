@@ -27,6 +27,8 @@ export function TestInsert() {
     ('gena@ukr.ua', 777);
   `)
 
+  // ВЫДАЁТ ОШИБКУ ПОТОМУ ЧТО У  (where product = product.id AND status = 'success') ВОЗВРАЩАЕТ СРАЗУ НЕСКОЛЬКО
+  // ЗАПИСЕЙ. У ЭТИХ ЗАПИСЕЙ (В ТЕОРИИ) МОГУТ БЫТЬ РАЗНЫЕ СТАТУСЫ, ПОЭТОМУ ОНО НЕ ЗНАЕТ ОТКУДА ЕГО БРАТЬ
   MySQLConnect.query(`
     INSERT into booking (sum, order_date, address, status, client, product)
     values
@@ -35,7 +37,9 @@ export function TestInsert() {
     (51, '05.06.2021', 'zhopkina 111', 'success', 1, 1),
     (76, '05.06.2021', 'zhopkina 3233', 'rejected', 2, 1),
     (123, '05.06.2021', 'zhopkina 76766', 'in_progress', 1, 2),
-    (87, '05.06.2021', 'zhopkina 111', 'success', 3, 3)
+    (87, '05.06.2021', 'zhopkina 111', 'success', 3, 3),
+    (76, '05.06.2021', 'testing', 'success', 2, 2),
+    (76, '05.06.2021', 'testingtwowwww', 'success', 2, 2)
   `)
 
   MySQLConnect.query(`

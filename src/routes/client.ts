@@ -7,5 +7,6 @@ router.post("/all", ClientController.getClients)
 router.post("/", ClientController.createClient)
 router.put("/:id", ClientController.updateClient)
 router.delete("/:id", ClientController.deleteClient)
+router.get("/report", ClientController.clientsReport)
 
 export default router

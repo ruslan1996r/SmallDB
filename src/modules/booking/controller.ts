@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import path from "path"
 
 import { BookingService } from "./service"
 import { IEntityData } from './../../orm/types';
@@ -39,6 +40,14 @@ class BookingController {
       const { id } = req.params
       const result = await this.bookingService.deleteBooking(id)
       return res.status(200).json(result)
+    } catch (e) {
+      return res.status(400).json({ status: 400, message: e })
+    }
+  }
+  public salesReport = async (req: Request, res: Response): Promise<any> => {
+    try {
+      const result: any = await this.bookingService.salesReport()
+      return res.status(200).sendFile(result)
     } catch (e) {
       return res.status(400).json({ status: 400, message: e })
     }

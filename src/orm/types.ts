@@ -14,6 +14,7 @@ interface EntityDataResult {
 export interface IEntity {
   data: [],
   entityName: string,
+  joins?: { [key: string]: any },
   where: (args: IArgs) => string,
   computedProps: (args: IArgs) => string,
   eager: (entityName: string) => Promise<this>,
